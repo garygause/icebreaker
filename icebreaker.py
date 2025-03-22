@@ -12,20 +12,29 @@ from langchain_core.output_parsers import StrOutputParser
 def scrape_linkedin_profile(linkedin_profile_url: str, mock_response: bool = False) -> str:
     if mock_response:
         return json.load(open("data/mock_linkedin.json"))
-    response = requests.get(
-        f"https://api.scrapin.com/linkedin/profile?url={linkedin_profile_url}&apikey={os.getenv('SCRAPIN_API_KEY')}"
-    )
-    return response.json()
+    
+    api_endpoint = "https://api.scrapin.io/enrichment/profile"
+    params = {
+        "linkedInUrl": linkedin_profile_url,
+        "apikey": os.getenv("SCRAPIN_API_KEY")
+    }
+    response = requests.get(api_endpoint, params=params, timeout=10)
+    if response.status_code != 200:
+        raise Exception(f"Failed to scrape LinkedIn profile: {response.status_code} {response.text}")
+    data = response.json().get("person")
+    data = {
+        k: v
+        for k, v in data.items()
+        if v not in ([], "", None)
+        and k not in ["peopleAlsoViewed", "certifications"]
+    }
+
+    return data
+   
 
 
 if __name__ == "__main__":
     print("LangChain initialized")
-
-    data = scrape_linkedin_profile(
-        "https://www.linkedin.com/in/garygause/", mock_response=True
-    )
-    print(data)
-    exit()
 
     llm = ChatOpenAI(
         model=os.getenv("MODEL_NAME"), temperature=os.getenv("TEMPERATURE")
@@ -42,9 +51,12 @@ if __name__ == "__main__":
 
     chain = summary_prompt | llm | StrOutputParser()
 
+    linkedin_data = scrape_linkedin_profile(
+        "https://www.linkedin.com/in/garygause/", mock_response=False
+    )
     result = chain.invoke(
         {
-            "information": "Dr. John Doe is a 32 year old male who is 1.8 meters tall and weighs 80 kilograms. He is a doctor who studied at Harvard University and has a passion for helping people."
+            "information": linkedin_data
         }
     )
     print(result)

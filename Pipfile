@@ -9,6 +9,8 @@ langchain = "*"
 community = "*"
 langchain-community = "*"
 langchainhub = "*"
+black = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

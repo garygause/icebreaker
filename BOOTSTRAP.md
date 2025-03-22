@@ -1,8 +1,8 @@
 # Bootstrap
 
-Steps taken to bootstrap this project:
+Steps taken to bootstrap this project.
 
-Create env:
+## Create env:
 
 ```bash
 # if needed
@@ -11,20 +11,23 @@ pip install --user pipenv
 pipenv shell
 ```
 
-Install dependencies:
+## Install dependencies:
 
 ```bash
 pipenv install langchain langchain-openai
 pipenv install langchain-community langchainhub
+
+pipenv install black
+pipenv install python-dotenv
 ```
 
-Create .env file:
+## Create .env file:
 
 ```bash
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-Set cursor/vscode python interpreter to the pipenv shell:
+## Set cursor/vscode python interpreter to the pipenv shell:
 
 ```bash
 which python

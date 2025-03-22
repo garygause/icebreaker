@@ -42,3 +42,9 @@ pipenv run which python
 - open command palette (ctrl+shift+p)
 - select Python: Select Interpreter
 - select the one in the pipenv shell
+
+## Scrapin
+
+Integration for linkedin scraping.
+
+[Scrapin Signup](https://app.scrapin.com/auth/register)
